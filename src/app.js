@@ -4,6 +4,10 @@ const cors = require('cors');
 const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
 
+const clubRoutes = require('./routes/club.routes');
+const eventRoutes = require('./routes/event.routes');
+const registrationRoutes = require('./routes/registration.routes');
+
 const app = express();
 
 // ─── Global Middleware ────────────────────────────────────────────────────────
@@ -23,15 +27,19 @@ app.get('/health', (req, res) => {
   });
 });
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
-// Route modules will be mounted here in later tasks.
+// ─── API Routes ───────────────────────────────────────────────────────────────
+
+app.use('/clubs', clubRoutes);
+app.use('/events', eventRoutes);
+app.use('/registrations', registrationRoutes);
 
 // ─── 404 Handler ──────────────────────────────────────────────────────────────
-// Must be registered after all routes so it only catches unmatched requests.
+// Registered after all routes — catches any request that did not match above.
 app.use(notFound);
 
 // ─── Centralized Error Handler ────────────────────────────────────────────────
-// Must be the last middleware registered. Receives errors forwarded by next(err).
+// Must be the LAST middleware. Receives errors forwarded by next(err) from
+// anywhere in the stack (controllers, services via asyncHandler, notFound).
 app.use(errorHandler);
 
 module.exports = app;
