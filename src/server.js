@@ -1,27 +1,46 @@
-const dotenv = require('dotenv');
+// env.js MUST be imported first — it is the only place dotenv.config() is called
+// and it validates required environment variables before anything else runs.
+const env = require('./config/env');
 
-// Load environment variables before anything else
-dotenv.config();
-
+const mongoose = require('mongoose');
+const connectDB = require('./config/db');
 const app = require('./app');
-
-const PORT = process.env.PORT || 3000;
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
-});
+const startServer = async () => {
+  // Connect to MongoDB before accepting any HTTP traffic.
+  // connectDB() throws on failure, which propagates here and exits the process.
+  await connectDB();
 
-// ─── Graceful Shutdown ────────────────────────────────────────────────────────
-
-const shutdown = (signal) => {
-  console.log(`\n${signal} received. Shutting down gracefully...`);
-  server.close(() => {
-    console.log('HTTP server closed.');
-    process.exit(0);
+  const server = app.listen(env.PORT, () => {
+    console.log(`[server] Running on port ${env.PORT} [${env.NODE_ENV}]`);
   });
+
+  // ─── Graceful Shutdown ──────────────────────────────────────────────────────
+
+  const shutdown = async (signal) => {
+    console.log(`\n[server] ${signal} received. Shutting down gracefully...`);
+
+    server.close(async () => {
+      console.log('[server] HTTP server closed.');
+
+      try {
+        await mongoose.connection.close();
+        console.log('[db] MongoDB connection closed.');
+      } catch (err) {
+        console.error('[db] Error closing MongoDB connection:', err.message);
+      }
+
+      process.exit(0);
+    });
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 };
 
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT', () => shutdown('SIGINT'));
+startServer().catch((err) => {
+  console.error('[server] Failed to start:', err.message);
+  process.exit(1);
+});

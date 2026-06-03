@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 
+const notFound = require('./middlewares/notFound');
+const errorHandler = require('./middlewares/errorHandler');
+
 const app = express();
 
 // ─── Global Middleware ────────────────────────────────────────────────────────
@@ -21,9 +24,14 @@ app.get('/health', (req, res) => {
 });
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
-// Routes will be mounted here in later tasks.
+// Route modules will be mounted here in later tasks.
 
-// ─── Error Handling ───────────────────────────────────────────────────────────
-// Error handler middleware will be registered here in later tasks.
+// ─── 404 Handler ──────────────────────────────────────────────────────────────
+// Must be registered after all routes so it only catches unmatched requests.
+app.use(notFound);
+
+// ─── Centralized Error Handler ────────────────────────────────────────────────
+// Must be the last middleware registered. Receives errors forwarded by next(err).
+app.use(errorHandler);
 
 module.exports = app;
