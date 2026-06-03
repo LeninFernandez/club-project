@@ -86,8 +86,19 @@ const deleteRegistration = async (id) => {
   await Registration.findByIdAndDelete(id);
 };
 
+/**
+ * Retrieve all registrations.
+ *
+ * @returns {Promise<Registration[]>} Array of all registration documents (may be empty)
+ */
+const getAllRegistrations = async () => {
+  const registrations = await Registration.find();
+  return registrations;
+};
+
 module.exports = {
   createRegistration,
+  getAllRegistrations,
   getRegistrationsByEvent,
   deleteRegistration,
 };

@@ -39,6 +39,22 @@ const getRegistrationsByEvent = asyncHandler(async (req, res) => {
   });
 });
 
+// ─── Get All Registrations ────────────────────────────────────────────────────
+
+/**
+ * GET /registrations
+ * Returns all registrations. Returns an empty array when none exist.
+ */
+const getAllRegistrations = asyncHandler(async (req, res) => {
+  const registrations = await registrationService.getAllRegistrations();
+
+  res.status(200).json({
+    success: true,
+    message: 'Registrations retrieved successfully',
+    data: registrations,
+  });
+});
+
 // ─── Delete Registration ──────────────────────────────────────────────────────
 
 /**
@@ -58,6 +74,7 @@ const deleteRegistration = asyncHandler(async (req, res) => {
 
 module.exports = {
   createRegistration,
+  getAllRegistrations,
   getRegistrationsByEvent,
   deleteRegistration,
 };

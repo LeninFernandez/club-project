@@ -20,6 +20,9 @@ router.post(
   registrationController.createRegistration
 );
 
+// GET /registrations — retrieve all registrations
+router.get('/', registrationController.getAllRegistrations);
+
 // GET /registrations/event/:eventId — retrieve all registrations for an event
 // Declared before /:id to prevent "event" being matched as an id param.
 router.get('/event/:eventId', registrationController.getRegistrationsByEvent);
