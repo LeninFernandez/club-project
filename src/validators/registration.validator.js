@@ -1,8 +1,6 @@
 const Joi = require('joi');
 
-// ─── Reusable field definitions ───────────────────────────────────────────────
-
-// ObjectId pattern: exactly 24 hexadecimal characters.
+// ObjectId pattern
 // Used for eventId validation — same pattern used in event.validator.js for clubId.
 const objectIdField = Joi.string()
   .pattern(/^[a-fA-F0-9]{24}$/)
@@ -19,8 +17,7 @@ const participantNameField = Joi.string().trim().min(2).max(100).messages({
   'string.max': 'participantName must not exceed 100 characters',
 });
 
-// participantEmail is lowercased by Joi before validation so that
-// "Jane@Example.com" and "jane@example.com" are treated identically,
+// participantEmail is lowercased by Joi before validation 
 // consistent with the lowercase: true setting on the Mongoose schema.
 // Max 254 chars follows RFC 5321 maximum email address length.
 const participantEmailField = Joi.string()
@@ -39,7 +36,7 @@ const participantEmailField = Joi.string()
 // All three fields are required.
 // Duplicate registration prevention is NOT performed here —
 // that is a business rule enforced by the unique compound index and
-// caught in registration.service.js (error code 11000 → 409 Conflict).
+// caught in registration.service.js 
 
 const createRegistrationSchema = Joi.object({
   eventId: objectIdField.required().messages({
@@ -54,12 +51,6 @@ const createRegistrationSchema = Joi.object({
     'any.required': 'participantEmail is required',
   }),
 });
-
-// ─── Update Registration ──────────────────────────────────────────────────────
-// All fields optional, but at least one must be provided.
-// NOTE: There is no PUT /registrations/:id endpoint in the API specification.
-// This schema is defined here for completeness as instructed, but it is not
-// wired to any route in Version 1.
 
 const updateRegistrationSchema = Joi.object({
   eventId: objectIdField,

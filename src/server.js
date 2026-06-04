@@ -1,5 +1,5 @@
-// env.js MUST be imported first — it is the only place dotenv.config() is called
-// and it validates required environment variables before anything else runs.
+// env.js imported first 
+// and dotenv.config() validates required environment variables 
 const env = require('./config/env');
 
 const mongoose = require('mongoose');

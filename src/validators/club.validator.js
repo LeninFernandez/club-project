@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-// ─── Reusable field definitions ───────────────────────────────────────────────
+// ─── Reusable field definitions ────────
 
 const nameField = Joi.string().trim().min(3).max(100).messages({
   'string.base': 'name must be a string',
@@ -16,7 +16,7 @@ const descriptionField = Joi.string().trim().min(10).max(1000).messages({
   'string.max': 'description must not exceed 1000 characters',
 });
 
-// ─── Create Club ──────────────────────────────────────────────────────────────
+// ─── Create Club ───────────
 // Both fields are required. Whitespace-only strings fail trim + minlength.
 
 const createClubSchema = Joi.object({
@@ -28,7 +28,7 @@ const createClubSchema = Joi.object({
   }),
 });
 
-// ─── Update Club ──────────────────────────────────────────────────────────────
+// ─── Update Club ────────────
 // Both fields are optional, but at least one must be present.
 // An empty payload {} is rejected with a clear message.
 

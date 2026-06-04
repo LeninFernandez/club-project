@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-// ─── Reusable field definitions ───────────────────────────────────────────────
+// ─── Reusable field definitions ───────────
 
 const titleField = Joi.string().trim().min(3).max(200).messages({
   'string.base': 'title must be a string',
@@ -37,11 +37,6 @@ const dateField = Joi.date().iso().messages({
   'date.base': 'must be a valid date',
   'date.format': 'must be a valid ISO 8601 date (e.g. 2026-06-08T10:00:00Z)',
 });
-
-// ─── Create Event ─────────────────────────────────────────────────────────────
-// All fields except description are required.
-// Date range validation (endDate >= startDate) is NOT performed here —
-// that is a business rule enforced in event.service.js at runtime.
 
 const createEventSchema = Joi.object({
   clubId: Joi.string()

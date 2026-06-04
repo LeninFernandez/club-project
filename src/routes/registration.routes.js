@@ -6,14 +6,9 @@ const registrationController = require('../controllers/registration.controller')
 
 const router = express.Router();
 
-// ─── Registration Routes ──────────────────────────────────────────────────────
-//
-// IMPORTANT: GET /registrations/event/:eventId MUST be declared before
-// DELETE /registrations/:id. Express matches routes in declaration order.
-// If /:id were first, the string "event" would match :id and the GET
-// route would never be reached.
+// IMPORTANT: route order matters in Express
+// Declared before /:id to avoid route conflict
 
-// POST /registrations — register a participant for an event
 router.post(
   '/',
   validate(createRegistrationSchema),

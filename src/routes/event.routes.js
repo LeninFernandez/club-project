@@ -6,13 +6,6 @@ const eventController = require('../controllers/event.controller');
 
 const router = express.Router();
 
-// ─── Event Routes ─────────────────────────────────────────────────────────────
-//
-// Middleware order for write operations:
-//   1. validate(schema)  — rejects invalid payloads with 400 before service is called
-//   2. controller        — already wrapped in asyncHandler; forwards errors to next()
-//
-// Read and delete operations require no body validation.
 
 // POST /events — create a new event
 router.post('/', validate(createEventSchema), eventController.createEvent);

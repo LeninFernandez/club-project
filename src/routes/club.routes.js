@@ -6,14 +6,6 @@ const clubController = require('../controllers/club.controller');
 
 const router = express.Router();
 
-// ─── Club Routes ──────────────────────────────────────────────────────────────
-//
-// Middleware order for write operations:
-//   1. validate(schema)  — rejects invalid payloads with 400 before service is called
-//   2. controller        — already wrapped in asyncHandler; forwards errors to next()
-//
-// Read and delete operations require no body validation.
-
 // POST /clubs — create a new club
 router.post('/', validate(createClubSchema), clubController.createClub);
 

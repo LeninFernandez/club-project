@@ -6,18 +6,18 @@ const env = require('../config/env');
  * Must be registered as the LAST middleware in app.js.
  *
  * Handles:
- *   - ApiError              → operational errors thrown by services/controllers
- *   - Mongoose CastError    → invalid ObjectId format in path params
- *   - Mongoose ValidationError → schema-level validation failures
- *   - MongoDB duplicate key (11000) → unique constraint violations
- *   - All other errors      → unexpected 500 errors
+ *   - ApiError              
+ *   - Mongoose CastError  
+ *   - Mongoose ValidationError
+ *   - MongoDB duplicate key (11000) 
+ *   - All other errors     
  *
  * All responses follow the documented error format:
  *   { success: false, message: "..." }
  *
  * Stack traces are hidden in production to avoid leaking internals.
  */
-// eslint-disable-next-line no-unused-vars
+
 const errorHandler = (err, req, res, next) => {
   // ── Operational errors thrown via ApiError ──────────────────────────────────
   if (err.isOperational) {
