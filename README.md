@@ -3,7 +3,7 @@
 > A RESTful backend API for managing Clubs, Events, and Event Registrations.
 
 **Deployment Link:** [https://club-project-6f83.onrender.com](https://club-project-6f83.onrender.com)  
-**Demo Video:** _(link to be added)_
+**Demo Video:** [Watch Demo](https://drive.google.com/file/d/11EiGR0sVAnN3vfOhP74eHosb2O3Lf0rs/view?usp=sharing)
 
 ## Project Setup Instructions
 
