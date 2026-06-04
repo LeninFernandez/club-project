@@ -21,10 +21,6 @@ const registrationSchema = new mongoose.Schema(
       lowercase: true, // normalise before storage so index comparison is case-insensitive
       maxlength: [254, 'Participant email must not exceed 254 characters'],
     },
-    registeredAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
     timestamps: true, // auto-manages createdAt and updatedAt
