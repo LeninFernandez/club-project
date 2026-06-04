@@ -2,9 +2,89 @@
 
 > A RESTful backend API for managing Clubs, Events, and Event Registrations.
 
-**Live API:** [https://club-project-6f83.onrender.com](https://club-project-6f83.onrender.com)
-
+**Deployment Link:** [https://club-project-6f83.onrender.com](https://club-project-6f83.onrender.com)  
 **Demo Video:** _(link to be added)_
+
+## Project Setup Instructions
+
+### Prerequisites
+
+- Node.js v18+
+- A MongoDB connection string (MongoDB Atlas free tier or local MongoDB)
+
+### Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/LeninFernandez/club-project.git
+cd club-project
+
+# 2. Install dependencies
+npm install
+
+# 3. Create your environment file
+cp .env.example .env
+```
+
+Open `.env` and set your values:
+
+```env
+PORT=3000
+NODE_ENV=development
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/club-management
+```
+
+```bash
+# 4. Start the development server
+npm run dev
+```
+
+The server starts at `http://localhost:3000`.
+
+Verify it is running:
+
+```bash
+curl http://localhost:3000/health
+# Expected: { "success": true, "message": "Server healthy" }
+```
+
+> **MongoDB Atlas users:** ensure your cluster's Network Access allows connections from `0.0.0.0/0` or your machine's IP, otherwise the connection will be refused.
+
+---
+
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `MONGODB_URI` | Yes | — | MongoDB connection string |
+| `PORT` | No | 3000 | Server port |
+| `NODE_ENV` | No | development | Runtime environment |
+
+---
+
+## Postman Collection
+
+A Postman collection covering all endpoints is included in the repository.
+
+**File:** `postman/club-management.postman_collection.json`
+
+To use: open Postman → Import → select the file above. Set the `baseUrl` variable to `https://club-project-6f83.onrender.com` for the live API or `http://localhost:3000` for local.
+
+---
+
+## Deployment
+
+Deployed on **Render**.
+
+**Live URL:** [https://club-project-6f83.onrender.com](https://club-project-6f83.onrender.com)
+
+To deploy your own instance:
+
+1. Push the repository to GitHub
+2. Create a new Web Service on [Render](https://render.com)
+3. Set build command: `npm install`
+4. Set start command: `npm start`
+5. Add environment variables in the Render dashboard: `MONGODB_URI`, `PORT`, `NODE_ENV`
 
 ---
 
@@ -148,6 +228,18 @@ Club
 
 ## Request & Response Examples
 
+### GET /health
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Server healthy"
+}
+```
+
+---
+
 ### POST /clubs
 
 **Request**
@@ -156,8 +248,8 @@ POST /clubs
 Content-Type: application/json
 
 {
-  "name": "Photography Club",
-  "description": "A club for photography enthusiasts."
+  "name": "Tech Club",
+  "description": "Club for technology enthusiasts"
 }
 ```
 
@@ -167,14 +259,130 @@ Content-Type: application/json
   "success": true,
   "message": "Club created successfully",
   "data": {
+    "name": "Tech Club",
+    "description": "Club for technology enthusiasts",
     "_id": "665f1a2b3c4d5e6f7a8b9c0d",
-    "name": "Photography Club",
-    "description": "A club for photography enthusiasts.",
     "createdAt": "2026-06-08T10:00:00.000Z",
-    "updatedAt": "2026-06-08T10:00:00.000Z"
+    "updatedAt": "2026-06-08T10:00:00.000Z",
+    "__v": 0
   }
 }
 ```
+
+**Errors**
+
+| Status | Message |
+|---|---|
+| 400 | `"name" is required` |
+| 409 | `Club name already exists` |
+
+---
+
+### GET /clubs
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Clubs retrieved successfully",
+  "data": [
+    {
+      "_id": "665f1a2b3c4d5e6f7a8b9c0d",
+      "name": "Tech Club",
+      "description": "Club for technology enthusiasts",
+      "createdAt": "2026-06-08T10:00:00.000Z",
+      "updatedAt": "2026-06-08T10:00:00.000Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+---
+
+### GET /clubs/:id
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Club retrieved successfully",
+  "data": {
+    "_id": "665f1a2b3c4d5e6f7a8b9c0d",
+    "name": "Tech Club",
+    "description": "Club for technology enthusiasts",
+    "createdAt": "2026-06-08T10:00:00.000Z",
+    "updatedAt": "2026-06-08T10:00:00.000Z",
+    "__v": 0
+  }
+}
+```
+
+**Errors**
+
+| Status | Message |
+|---|---|
+| 400 | `Invalid ID format` |
+| 404 | `Club not found` |
+
+---
+
+### PUT /clubs/:id
+
+**Request**
+```http
+PUT /clubs/665f1a2b3c4d5e6f7a8b9c0d
+Content-Type: application/json
+
+{
+  "description": "Updated description"
+}
+```
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Club updated successfully",
+  "data": {
+    "_id": "665f1a2b3c4d5e6f7a8b9c0d",
+    "name": "Tech Club",
+    "description": "Updated description",
+    "createdAt": "2026-06-08T10:00:00.000Z",
+    "updatedAt": "2026-06-08T11:00:00.000Z",
+    "__v": 0
+  }
+}
+```
+
+**Errors**
+
+| Status | Message |
+|---|---|
+| 400 | `Invalid ID format` |
+| 404 | `Club not found` |
+| 409 | `Club name already exists` |
+
+---
+
+### DELETE /clubs/:id
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Club deleted successfully"
+}
+```
+
+**Errors**
+
+| Status | Message |
+|---|---|
+| 400 | `Invalid ID format` |
+| 404 | `Club not found` |
+
+---
 
 ### POST /events
 
@@ -185,11 +393,11 @@ Content-Type: application/json
 
 {
   "clubId": "665f1a2b3c4d5e6f7a8b9c0d",
-  "title": "Annual Photo Walk",
-  "description": "A guided walk through the city capturing urban life.",
-  "location": "City Center Park",
-  "startDate": "2026-07-01T09:00:00Z",
-  "endDate": "2026-07-01T17:00:00Z"
+  "title": "Hackathon",
+  "description": "Annual Hackathon",
+  "location": "VIT Chennai",
+  "startDate": "2026-06-10T09:00:00Z",
+  "endDate": "2026-06-10T17:00:00Z"
 }
 ```
 
@@ -199,18 +407,147 @@ Content-Type: application/json
   "success": true,
   "message": "Event created successfully",
   "data": {
-    "_id": "665f2b3c4d5e6f7a8b9c0e1f",
     "clubId": "665f1a2b3c4d5e6f7a8b9c0d",
-    "title": "Annual Photo Walk",
-    "description": "A guided walk through the city capturing urban life.",
-    "location": "City Center Park",
-    "startDate": "2026-07-01T09:00:00.000Z",
-    "endDate": "2026-07-01T17:00:00.000Z",
+    "title": "Hackathon",
+    "description": "Annual Hackathon",
+    "location": "VIT Chennai",
+    "startDate": "2026-06-10T09:00:00.000Z",
+    "endDate": "2026-06-10T17:00:00.000Z",
+    "_id": "665f2b3c4d5e6f7a8b9c0e1f",
     "createdAt": "2026-06-08T10:00:00.000Z",
-    "updatedAt": "2026-06-08T10:00:00.000Z"
+    "updatedAt": "2026-06-08T10:00:00.000Z",
+    "__v": 0
   }
 }
 ```
+
+**Errors**
+
+| Status | Message |
+|---|---|
+| 400 | `endDate must be greater than or equal to startDate` |
+| 400 | `startDate must be a valid ISO 8601 date` |
+| 404 | `Club not found` |
+
+---
+
+### GET /events
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Events retrieved successfully",
+  "data": [
+    {
+      "_id": "665f2b3c4d5e6f7a8b9c0e1f",
+      "clubId": "665f1a2b3c4d5e6f7a8b9c0d",
+      "title": "Hackathon",
+      "description": "Annual Hackathon",
+      "location": "VIT Chennai",
+      "startDate": "2026-06-10T09:00:00.000Z",
+      "endDate": "2026-06-10T17:00:00.000Z",
+      "createdAt": "2026-06-08T10:00:00.000Z",
+      "updatedAt": "2026-06-08T10:00:00.000Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+---
+
+### GET /events/:id
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Event retrieved successfully",
+  "data": {
+    "_id": "665f2b3c4d5e6f7a8b9c0e1f",
+    "clubId": "665f1a2b3c4d5e6f7a8b9c0d",
+    "title": "Hackathon",
+    "description": "Annual Hackathon",
+    "location": "VIT Chennai",
+    "startDate": "2026-06-10T09:00:00.000Z",
+    "endDate": "2026-06-10T17:00:00.000Z",
+    "createdAt": "2026-06-08T10:00:00.000Z",
+    "updatedAt": "2026-06-08T10:00:00.000Z",
+    "__v": 0
+  }
+}
+```
+
+**Errors**
+
+| Status | Message |
+|---|---|
+| 400 | `Invalid ID format` |
+| 404 | `Event not found` |
+
+---
+
+### PUT /events/:id
+
+**Request**
+```http
+PUT /events/665f2b3c4d5e6f7a8b9c0e1f
+Content-Type: application/json
+
+{
+  "location": "Updated Location"
+}
+```
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Event updated successfully",
+  "data": {
+    "_id": "665f2b3c4d5e6f7a8b9c0e1f",
+    "clubId": "665f1a2b3c4d5e6f7a8b9c0d",
+    "title": "Hackathon",
+    "description": "Annual Hackathon",
+    "location": "Updated Location",
+    "startDate": "2026-06-10T09:00:00.000Z",
+    "endDate": "2026-06-10T17:00:00.000Z",
+    "createdAt": "2026-06-08T10:00:00.000Z",
+    "updatedAt": "2026-06-08T11:00:00.000Z",
+    "__v": 0
+  }
+}
+```
+
+**Errors**
+
+| Status | Message |
+|---|---|
+| 400 | `Invalid ID format` |
+| 400 | `clubId cannot be modified` |
+| 404 | `Event not found` |
+
+---
+
+### DELETE /events/:id
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Event deleted successfully"
+}
+```
+
+**Errors**
+
+| Status | Message |
+|---|---|
+| 400 | `Invalid ID format` |
+| 404 | `Event not found` |
+
+---
 
 ### POST /registrations
 
@@ -221,8 +558,8 @@ Content-Type: application/json
 
 {
   "eventId": "665f2b3c4d5e6f7a8b9c0e1f",
-  "participantName": "Jane Smith",
-  "participantEmail": "jane.smith@example.com"
+  "participantName": "John Doe",
+  "participantEmail": "john@example.com"
 }
 ```
 
@@ -232,19 +569,71 @@ Content-Type: application/json
   "success": true,
   "message": "Registration created successfully",
   "data": {
-    "_id": "665f3c4d5e6f7a8b9c0e1f2a",
     "eventId": "665f2b3c4d5e6f7a8b9c0e1f",
-    "participantName": "Jane Smith",
-    "participantEmail": "jane.smith@example.com",
+    "participantName": "John Doe",
+    "participantEmail": "john@example.com",
+    "_id": "665f3c4d5e6f7a8b9c0e1f2a",
     "createdAt": "2026-06-08T10:00:00.000Z",
-    "updatedAt": "2026-06-08T10:00:00.000Z"
+    "updatedAt": "2026-06-08T10:00:00.000Z",
+    "__v": 0
   }
 }
 ```
 
-### Error Responses
+**Errors**
 
-All error responses follow the same structure:
+| Status | Message |
+|---|---|
+| 404 | `Event not found` |
+| 409 | `Participant is already registered for this event` |
+
+---
+
+### GET /registrations
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Registrations retrieved successfully",
+  "data": [
+    {
+      "_id": "665f3c4d5e6f7a8b9c0e1f2a",
+      "eventId": "665f2b3c4d5e6f7a8b9c0e1f",
+      "participantName": "John Doe",
+      "participantEmail": "john@example.com",
+      "createdAt": "2026-06-08T10:00:00.000Z",
+      "updatedAt": "2026-06-08T10:00:00.000Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+---
+
+### DELETE /registrations/:id
+
+**Response** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Registration cancelled successfully"
+}
+```
+
+**Errors**
+
+| Status | Message |
+|---|---|
+| 400 | `Invalid ID format` |
+| 404 | `Registration not found` |
+
+---
+
+### Error Response Format
+
+All errors follow this structure:
 
 ```json
 {
@@ -252,73 +641,6 @@ All error responses follow the same structure:
   "message": "<error description>"
 }
 ```
-
-| Status | When |
-|---|---|
-| 400 | Validation failure or invalid ID format |
-| 404 | Resource not found |
-| 409 | Duplicate club name or duplicate registration |
-| 500 | Unexpected server error |
-
-
-## Setup Instructions
-
-### Prerequisites
-
-- Node.js v18+
-- MongoDB Atlas URI (or local MongoDB)
-
-### Steps
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/LeninFernandez/club-project
-cd club-project
-
-# 2. Install dependencies
-npm install
-
-# 3. Configure environment
-cp .env.example .env
-# Edit .env with your values
-
-# 4. Start development server
-npm run dev
-```
-
-Server runs at `http://localhost:3000`. Verify with `GET /health`.
-
----
-
-## Environment Variables
-
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `MONGODB_URI` | Yes | — | MongoDB connection string |
-| `PORT` | No | 3000 | Server port |
-| `NODE_ENV` | No | development | Environment |
-
-```env
-PORT=3000
-NODE_ENV=development
-MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/club-management
-```
-
----
-
-## Deployment
-
-Deployed on **Render**.
-
-**Live URL:** [https://club-project-6f83.onrender.com](https://club-project-6f83.onrender.com)
-
-To deploy your own instance:
-
-1. Push the repository to GitHub
-2. Create a new Web Service on [Render](https://render.com)
-3. Set build command: `npm install`
-4. Set start command: `npm start`
-5. Add environment variables: `MONGODB_URI`, `PORT`, `NODE_ENV`
 
 ---
 
